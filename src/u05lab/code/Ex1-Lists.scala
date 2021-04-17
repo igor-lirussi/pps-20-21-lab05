@@ -115,19 +115,53 @@ trait ListImplementation[A] extends List[A] {
     case Nil() => Nil()
   }
 
-  override def zipRight: List[(A,Int)] = ??? // questions: what is the type of keyword ???
+  override def zipRight: List[(A,Int)] = {
+    /*
+    //ricorsivamente; lista che verrà ridotta, intero per dove siamo arrivati, lista risultante costruita
+    @tailrec
+    def _zipRight(l: List[A], k:Int =0, res: List[(A, Int)] = List.nil) : List[(A, Int)]= l match {
+        case h::t => _zipRight(t, k+1, (h,k)::res) //passo ricorsivamente, la coda da elaborare, il k aumentato, la lista con aggiunta la testa e k
+        case _ => res
+    }
+    _zipRight(this).reverse()
+    */
+    //con la map
+    var k =0;
+    this.map(  e=> {val mapped=(e, k); k+=1; mapped} )
+  }
 
-  override def partition(pred: A => Boolean): (List[A],List[A]) = ???
+  //passo la coppia delle due liste, una filtrata con il predicato, l'altra passando un nuovo predicato che è il contrario del primo
+  override def partition(pred: A => Boolean): (List[A],List[A]) = ( this.filter(pred), this.filter(A => !pred(A)))
 
-  override def span(pred: A => Boolean): (List[A],List[A]) = ???
+  //ricorsivamente se la testa soddisfa il predicato la butto nella nuova lista, richiamandomi sulla coda
+  //se la testa non soddisfa, passo la lista nuova al reverse, la testa attuale e la coda rimanente
+  override def span(pred: A => Boolean): (List[A],List[A]) = {
+    @tailrec
+    def _span(pred: A => Boolean,list: List[A], firstList: List[A]= List.nil): (List[A],List[A]) = list match {
+      case h::t if pred(h) => _span(pred, t, h::firstList)
+      case h::t =>  (firstList.reverse(), h::t)
+      case _ => (firstList.reverse(), List.nil)
+    }
+    _span(pred,this)
+  }
 
   /**
-    *
     * @throws UnsupportedOperationException if the list is empty
     */
-  override def reduce(op: (A,A)=>A): A = ???
+  override def reduce(op: (A,A)=>A): A = this match {
+    case h::t => t.foldLeft(h)(op)
+    case _ => throw new UnsupportedOperationException()
+  }
 
-  override def takeRight(n: Int): List[A] = ???
+  override def takeRight(n: Int): List[A] = {
+    def _take(n:Int, list: List[A], tempList:List[A]= List.nil): List[A] = list match {
+      case h::t if n>0 => _take(n-1, t, h::tempList)
+      case h::t => tempList
+      case _ => tempList
+    }
+    _take(n, this.reverse())
+  }
+
 }
 
 // Factories
@@ -147,7 +181,7 @@ object List {
     if (n==0) Nil() else elem :: of(elem,n-1)
 }
 
-object ListsTest extends App {
+object ListsUse extends App {
 
   import List._  // Working with the above lists
   println(List(10,20,30,40))
