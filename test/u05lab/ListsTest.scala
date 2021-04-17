@@ -75,4 +75,11 @@ class ListsTest {
     //tutti
     assertEquals( List(1,2,3,4,5,6) , lNum.takeRight(9))
   }
+
+
+  @Test
+  def testCollect(): Unit ={
+    assertEquals( List(11, 12, 16) , lNum.collect{ case x if (x<3 || x>5) => x+10 })
+    assertEquals( List("az", "cz"), lAlph.collect{ case x if (x=="a" || x=="c") => x+"z" })
+  }
 }

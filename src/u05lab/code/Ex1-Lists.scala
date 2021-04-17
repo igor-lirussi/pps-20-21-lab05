@@ -39,6 +39,8 @@ sealed trait List[A] {
 
   def takeRight(n: Int): List[A]
 
+  def collect[B](fun: PartialFunction[A,B]): List[B]
+
   // right-associative construction: 10 :: 20 :: 30 :: Nil()
   def ::(head: A): List[A] = Cons(head,this)
 }
@@ -149,10 +151,11 @@ trait ListImplementation[A] extends List[A] {
     * @throws UnsupportedOperationException if the list is empty
     */
   override def reduce(op: (A,A)=>A): A = this match {
-    case h::t => t.foldLeft(h)(op)
-    case _ => throw new UnsupportedOperationException()
+    case h::t => t.foldLeft(h)(op)    //uso la fold left se la lista è piena e la inizializzo con il primo elemento
+    case _ => throw new UnsupportedOperationException() //se è vuota ritorno l'eccezione
   }
 
+  //prendo i primi n elementi dalla lista reverse, accumulandoli a partire dall'ultimo passando la variabile, in modo da avere gli ultimi elems della lista originale
   override def takeRight(n: Int): List[A] = {
     def _take(n:Int, list: List[A], tempList:List[A]= List.nil): List[A] = list match {
       case h::t if n>0 => _take(n-1, t, h::tempList)
@@ -161,6 +164,9 @@ trait ListImplementation[A] extends List[A] {
     }
     _take(n, this.reverse())
   }
+
+  //passo alla filter la funzione con isDefined che ritorna un booleano (se il case è verificato o meno), passo alla map la funzione applicata ai rimanenti
+  override def collect[B](fun: PartialFunction[A,B]): List[B] = this.filter(x=> fun.isDefinedAt(x)).map(x=> fun.apply(x))
 
 }
 
@@ -217,5 +223,5 @@ object ListsUse extends App {
   println(l.takeRight(2)) // Cons(30,Cons(40,Nil()))
 
   // Ex. 6: collect
-  // println(l.collect { case x if x<15 || x>35 => x-1 }) // Cons(9, Cons(39, Nil()))
+  println( l.collect{ case x if (x<15 || x>35) => x-1 } ) // Cons(9, Cons(39, Nil()))
 }
