@@ -2,7 +2,7 @@ package u05lab
 
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.Assertions._
-import u05lab.code.{ExamResult, Kind}
+import u05lab.code.{ExamResult, ExamsManager, Kind}
 
 
 class ExamsManagerTest {
@@ -54,4 +54,20 @@ class ExamsManagerTest {
       case e: IllegalArgumentException => assert(true)
     }
   }
+
+  val examsManager = ExamsManager()
+  @Test
+  def testExamsManager(): Unit = {
+    examsManager.createNewCall("gennaio")
+    examsManager.createNewCall("febbraio")
+    examsManager.createNewCall("marzo")
+
+
+    examsManager.addStudentResult("gennaio", "rossi", ExamResult.failed()); // rossi -> fallito
+    examsManager.addStudentResult("gennaio", "bianchi", ExamResult.retired()); // bianchi -> ritirato
+    examsManager.addStudentResult("gennaio", "verdi", ExamResult.succeeded(28)); // verdi -> 28
+    examsManager.addStudentResult("gennaio", "neri", ExamResult.succeededCumLaude()); // neri -> 30L
+  }
+
+
 }

@@ -1,5 +1,7 @@
 package u05lab.code
 
+import scala.collection.mutable.{Map => MutMap}
+
 //enum
 //object Kind extends Enumeration {
 //  type Kind = Value
@@ -38,4 +40,39 @@ object ExamResult {
   }
 }
 
+sealed trait ExamsManager {
+  def createNewCall(call: String)
 
+  def addStudentResult(call: String, student: String, examResult: ExamResult)
+
+  def getAllStudentsFromCall(call: String): Set[String]
+
+  def getEvaluationsMapFromCall(call: String): Map[String, Int]
+
+  def getResultsMapFromStudent(student: String): Map[String, String]
+
+  def getBestResultFromStudent(student: String): Option[Int]
+}
+
+object ExamsManager {
+
+  def apply(): ExamsManager = new ExamsManagerImpl()
+
+  private class ExamsManagerImpl() extends ExamsManager {
+    val calls : MutMap[String, MutMap[String, ExamResult]] = MutMap[String, MutMap[String, ExamResult]]()
+    override def createNewCall(call: String): Unit = calls.addOne(call -> MutMap[String, ExamResult]())
+
+    override def addStudentResult(call: String, student: String, examResult: ExamResult): Unit = ???
+
+    override def getAllStudentsFromCall(call: String): Set[String] = ???
+
+    override def getEvaluationsMapFromCall(call: String): Map[String, Int] = ???
+
+    override def getResultsMapFromStudent(student: String): Map[String, String] = ???
+
+    override def getBestResultFromStudent(student: String): Option[Int] = ???
+  }
+
+
+
+}
