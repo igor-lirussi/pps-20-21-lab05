@@ -15,7 +15,7 @@ object Kind {
 }
 
 
-//risultato esame con enum
+//risultato esame usando enum
 sealed trait ExamResult {
   def getKind: Kind
   def getEvaluation: Option[Int]
@@ -24,12 +24,18 @@ sealed trait ExamResult {
 
 object ExamResult {
 
-  def apply(): ExamResult = new ExamResultImpl()
+  def failed(): ExamResult = new ExamResultImpl()
+  def succeeded(mark:Int): ExamResult = new ExamResultImpl(Kind.SUCCEEDED(), Option(mark))
+  def succeededCumLaude(): ExamResult = new ExamResultImpl(Kind.SUCCEEDED(), Option(30), true)
+  def retired(): ExamResult = new ExamResultImpl(Kind.RETIRED())
 
-  private class ExamResultImpl(kind: Kind= Kind.FAILED(), laude:Boolean=false, evaluation : Option[Int]=None ) extends ExamResult {
+  private class ExamResultImpl(kind: Kind = Kind.FAILED(), evaluation: Option[Int] = None, laude: Boolean = false) extends ExamResult {
+    if (evaluation.isDefined) if (evaluation.get > 30) throw new IllegalArgumentException
+
     override def getKind: Kind = kind
-    override def cumLaude: Boolean = laude
+    override def cumLaude: Boolean = laude && evaluation.contains(30)
     override def getEvaluation: Option[Int] = evaluation
   }
-
 }
+
+
