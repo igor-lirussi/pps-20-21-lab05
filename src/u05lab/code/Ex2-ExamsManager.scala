@@ -62,7 +62,10 @@ object ExamsManager {
     val calls : MutMap[String, MutMap[String, ExamResult]] = MutMap[String, MutMap[String, ExamResult]]()
     override def createNewCall(call: String): Unit = calls.addOne(call -> MutMap[String, ExamResult]())
 
-    override def addStudentResult(call: String, student: String, examResult: ExamResult): Unit = ???
+    override def addStudentResult(call: String, student: String, examResult: ExamResult): Unit = {
+      if (!calls.contains(call)) throw new IllegalArgumentException
+      calls.get(call).get.addOne(student -> examResult)
+    }
 
     override def getAllStudentsFromCall(call: String): Set[String] = ???
 
