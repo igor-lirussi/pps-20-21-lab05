@@ -1,6 +1,7 @@
 package u05lab.code
 
 import scala.collection.mutable.{Map => MutMap}
+import scala.collection.Set
 
 //enum
 //object Kind extends Enumeration {
@@ -67,7 +68,10 @@ object ExamsManager {
       calls.get(call).get.addOne(student -> examResult)
     }
 
-    override def getAllStudentsFromCall(call: String): Set[String] = ???
+    override def getAllStudentsFromCall(call: String): Set[String] = {
+      if (!calls.contains(call)) throw new IllegalArgumentException
+      calls.get(call).get.keySet
+    }
 
     override def getEvaluationsMapFromCall(call: String): Map[String, Int] = ???
 

@@ -67,6 +67,25 @@ class ExamsManagerTest {
     examsManager.addStudentResult("gennaio", "bianchi", ExamResult.retired()); // bianchi -> ritirato
     examsManager.addStudentResult("gennaio", "verdi", ExamResult.succeeded(28)); // verdi -> 28
     examsManager.addStudentResult("gennaio", "neri", ExamResult.succeededCumLaude()); // neri -> 30L
+
+    examsManager.addStudentResult("febbraio", "rossi", ExamResult.failed)
+    examsManager.addStudentResult("febbraio", "bianchi", ExamResult.succeeded(20))
+    examsManager.addStudentResult("febbraio", "verdi", ExamResult.succeeded(30))
+
+    examsManager.addStudentResult("marzo", "rossi", ExamResult.succeeded(25))
+    examsManager.addStudentResult("marzo", "bianchi", ExamResult.succeeded(25))
+    examsManager.addStudentResult("marzo", "viola", ExamResult.failed)
+  }
+
+  @Test
+  def testExamsManager2(): Unit = {
+    this.testExamsManager()
+
+    import java.util
+    // partecipanti agli appelli di gennaio e marzo// partecipanti agli appelli di gennaio e marzo
+    assertEquals(examsManager.getAllStudentsFromCall("gennaio"), Set("rossi", "bianchi", "verdi", "neri"))
+    assertEquals(examsManager.getAllStudentsFromCall("marzo"), Set("rossi", "bianchi", "viola"))
+
   }
 
 
