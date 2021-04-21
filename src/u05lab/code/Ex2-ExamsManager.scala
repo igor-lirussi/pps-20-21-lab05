@@ -48,7 +48,7 @@ sealed trait ExamsManager {
 
   def getAllStudentsFromCall(call: String): Set[String]
 
-  def getEvaluationsMapFromCall(call: String): Map[String, Int]
+  def getEvaluationsMapFromCall(call: String): Map[String, ExamResult]
 
   def getResultsMapFromStudent(student: String): Map[String, String]
 
@@ -73,7 +73,7 @@ object ExamsManager {
       calls.get(call).get.keySet
     }
 
-    override def getEvaluationsMapFromCall(call: String): Map[String, Int] = ???
+    override def getEvaluationsMapFromCall(call: String): Map[String, ExamResult] = calls.get(call).get.filter( elem => elem._2.getEvaluation.isDefined ).toMap
 
     override def getResultsMapFromStudent(student: String): Map[String, String] = ???
 

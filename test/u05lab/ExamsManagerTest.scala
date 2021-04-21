@@ -81,10 +81,18 @@ class ExamsManagerTest {
   def testExamsManager2(): Unit = {
     this.testExamsManager()
 
-    import java.util
     // partecipanti agli appelli di gennaio e marzo// partecipanti agli appelli di gennaio e marzo
     assertEquals(examsManager.getAllStudentsFromCall("gennaio"), Set("rossi", "bianchi", "verdi", "neri"))
     assertEquals(examsManager.getAllStudentsFromCall("marzo"), Set("rossi", "bianchi", "viola"))
+
+    // promossi di gennaio con voto
+    assertEquals(examsManager.getEvaluationsMapFromCall("gennaio").size, 2)
+    assertEquals(examsManager.getEvaluationsMapFromCall("gennaio").get("verdi").get.getEvaluation.get, 28)
+    assertEquals(examsManager.getEvaluationsMapFromCall("gennaio")("neri").getEvaluation.get, 30)
+    // promossi di febbraio con voto
+    assertEquals(examsManager.getEvaluationsMapFromCall("febbraio").size, 2)
+    assertEquals(examsManager.getEvaluationsMapFromCall("febbraio").get("bianchi").get.getEvaluation.get, 20)
+    assertEquals(examsManager.getEvaluationsMapFromCall("febbraio").get("verdi").get.getEvaluation.get, 30)
 
   }
 
