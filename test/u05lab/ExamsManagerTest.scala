@@ -94,6 +94,31 @@ class ExamsManagerTest {
     assertEquals(examsManager.getEvaluationsMapFromCall("febbraio").get("bianchi").get.getEvaluation.get, 20)
     assertEquals(examsManager.getEvaluationsMapFromCall("febbraio").get("verdi").get.getEvaluation.get, 30)
 
+
+
+    // tutti i risultati di rossi (attenzione ai toString!!)
+    println(examsManager.getResultsMapFromStudent("rossi"))
+    assertEquals(examsManager.getResultsMapFromStudent("rossi").size, 3)
+    assertEquals(examsManager.getResultsMapFromStudent("rossi").get("gennaio").get, "FAILED")
+    assertEquals(examsManager.getResultsMapFromStudent("rossi")("febbraio"), "FAILED")
+    assertEquals(examsManager.getResultsMapFromStudent("rossi")("marzo"), "SUCCEEDED(25)")
+    // tutti i risultati di bianchi
+    assertEquals(examsManager.getResultsMapFromStudent("bianchi").size, 3)
+    assertEquals(examsManager.getResultsMapFromStudent("bianchi").get("gennaio").get, "RETIRED")
+    assertEquals(examsManager.getResultsMapFromStudent("bianchi")("febbraio"), "SUCCEEDED(20)")
+    assertEquals(examsManager.getResultsMapFromStudent("bianchi")("marzo"), "SUCCEEDED(25)")
+    // tutti i risultati di neri
+    assertEquals(examsManager.getResultsMapFromStudent("neri").size, 1)
+    assertEquals(examsManager.getResultsMapFromStudent("neri")("gennaio"), "SUCCEEDED(30L)")
+
+    import java.util.Optional
+    // miglior voto acquisito da ogni studente, o vuoto..// miglior voto acquisito da ogni studente, o vuoto..
+
+    assertEquals(examsManager.getBestResultFromStudent("rossi"), Some(25))
+    assertEquals(examsManager.getBestResultFromStudent("bianchi"), Some(25))
+    assertEquals(examsManager.getBestResultFromStudent("neri"), Some(30))
+    assertEquals(examsManager.getBestResultFromStudent("viola"), None)
+
   }
 
 

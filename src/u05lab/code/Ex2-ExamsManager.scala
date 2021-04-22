@@ -60,7 +60,9 @@ object ExamsManager {
   def apply(): ExamsManager = new ExamsManagerImpl()
 
   private class ExamsManagerImpl() extends ExamsManager {
+    //todo: da preferire immutable maps
     val calls : MutMap[String, MutMap[String, ExamResult]] = MutMap[String, MutMap[String, ExamResult]]()
+
     override def createNewCall(call: String): Unit = calls.addOne(call -> MutMap[String, ExamResult]())
 
     override def addStudentResult(call: String, student: String, examResult: ExamResult): Unit = {
@@ -75,11 +77,25 @@ object ExamsManager {
 
     override def getEvaluationsMapFromCall(call: String): Map[String, ExamResult] = calls.get(call).get.filter( elem => elem._2.getEvaluation.isDefined ).toMap
 
-    override def getResultsMapFromStudent(student: String): Map[String, String] = ???
+    def getExamResultsMapFromStudent(student: String): Map[String, ExamResult] = {
+      calls.filter(call => call._2.isDefinedAt(student)).map(call => (call._1, call._2.get(student).get)).toMap
+    }
 
-    override def getBestResultFromStudent(student: String): Option[Int] = ???
+    override def getResultsMapFromStudent(student: String): Map[String, String] = {
+      this.getExamResultsMapFromStudent(student).map(result => (
+        result._1,
+        result._2 match {
+          case res if res.getKind == Kind.FAILED() => "FAILED"
+          case res if res.getKind == Kind.RETIRED() => "RETIRED"
+          case res if res.getKind == Kind.SUCCEEDED() => "SUCCEEDED("+res.getEvaluation.get + (if (res.cumLaude) "L" else "") + ")"
+          case _ => "error"
+        }
+      ))
+    }
+
+    override def getBestResultFromStudent(student: String): Option[Int] =
+      this.getExamResultsMapFromStudent(student).map(session => (session._1, session._2.getEvaluation)).max._2
+
   }
-
-
 
 }
